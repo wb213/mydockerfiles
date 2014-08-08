@@ -7,6 +7,7 @@ MAINTAINER Barry Wang barry213@gmail.com
 
 # Set correct environment variables.
 ENV HOME /root
+ENV DEBIAN_FRONTEND noninteractive
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
@@ -26,7 +27,8 @@ RUN cd /home/app/redmine-2.5.1 && \
 
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
     curl -fSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && \
-    apt-get update && apt-get install -y postgresql-server-dev-9.3
+    apt-get update && \
+    apt-get install -y postgresql-server-dev-9.3 imagemagick libpq-dev libmagickcore-dev libmagickwand-dev libcurl4-openssl-dev
 
 USER app
 
@@ -35,3 +37,6 @@ WORKDIR /home/app/redmine-2.5.1
 RUN bundle install --path vendor/bundle --without development test
 
 RUN bundle exec rake generate_secret_token
+
+USER root
+
